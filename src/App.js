@@ -31,49 +31,54 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
 
   /**
-   * PRESERVED: Original background selection logic
-   * Maps weather descriptions to background images
+   * UPDATED: Improved background selection logic
+   * - Uses sunny.jpg for sunny conditions
+   * - Separates thunderstorms from light rain
+   * - More precise condition matching
    */
   const getBackgroundImage = (description) => {
     if (!description) return "/clear.jpg";
     description = description.toLowerCase();
 
+    // Check for thunderstorms FIRST (most severe)
+    if (
+      description.includes("thunder") ||
+      description.includes("storm") ||
+      description.includes("severe")
+    )
+      return "/rain.jpg"; // Use rain.jpg for storms
+
+    // Light rain conditions - uses light_rain.jpg
+    if (
+      description.includes("drizzle") ||
+      description.includes("light rain") ||
+      description.includes("slight chance") ||
+      description.includes("chance rain") ||
+      description.includes("sprinkle") ||
+      description.includes("scattered showers")
+    )
+      return "/light_rain.jpg"; // Light rain background
+
+    // Regular rain/showers
     if (
       description.includes("rain") ||
       description.includes("shower") ||
-      description.includes("thunder") ||
-      description.includes("storm") ||
-      description.includes("drizzle") ||
       description.includes("wet")
     )
       return "/rain.jpg";
 
-    if (
-      description.includes("partly cloudy") ||
-      description.includes("mostly cloudy")
-    )
-      return "/partlyCloudy.jpg";
-
-    if (description.includes("cloud") || description.includes("overcast"))
-      return "/cloudy.jpg";
-
-    if (
-      description.includes("sun") ||
-      description.includes("clear") ||
-      description.includes("bright") ||
-      description.includes("sunny") ||
-      description.includes("Mostly Sunny")
-    )
-      return "/clear.jpg";
-
+    // Snow conditions
     if (
       description.includes("snow") ||
       description.includes("sleet") ||
       description.includes("blizzard") ||
-      description.includes("flurry")
+      description.includes("flurry") ||
+      description.includes("ice") ||
+      description.includes("wintry")
     )
       return "/snow.jpg";
 
+    // Fog/mist conditions
     if (
       description.includes("fog") ||
       description.includes("mist") ||
@@ -82,6 +87,38 @@ function App() {
     )
       return "/fog.jpg";
 
+    // Partly cloudy (check before fully cloudy)
+    if (
+      description.includes("partly cloudy") ||
+      description.includes("mostly sunny") ||
+      description.includes("partly sunny")
+    )
+      return "/partlyCloudy.jpg";
+
+    // Mostly cloudy / cloudy
+    if (
+      description.includes("mostly cloudy") ||
+      description.includes("cloudy") ||
+      description.includes("overcast")
+    )
+      return "/cloudy.jpg";
+
+    // Sunny / Clear conditions - USE sunny.jpg!
+    if (
+      description.includes("sunny") ||
+      description.includes("sun")
+    )
+      return "/sunny.jpg";
+
+    // Clear skies (night or day)
+    if (
+      description.includes("clear") ||
+      description.includes("bright") ||
+      description.includes("fair")
+    )
+      return "/clear.jpg";
+
+    // Default fallback
     return "/clear.jpg";
   };
 
